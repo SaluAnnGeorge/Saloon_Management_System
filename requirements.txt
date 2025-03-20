@@ -2,6 +2,7 @@ Django
 djangorestframework
 django-allauth
 django-crispy-forms
+django-import-export
 crispy-bootstrap5
 Pillow
 python-dotenv
@@ -16,3 +17,6 @@ xhtml2pdf
 google-generativeai
 django-ckeditor
 shortuuid
+openpyxl
+matplotlib
+django-mathfilters
