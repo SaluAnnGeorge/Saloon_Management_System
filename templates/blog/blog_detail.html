@@ -1,0 +1,23 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        {% if blog.image %}
+        <img src="{{ blog.image.url }}" class="card-img-top" alt="{{ blog.title }}">
+        {% endif %}
+        <div class="card-body">
+            <h1 class="card-title">{{ blog.title }}</h1>
+            <p class="text-muted">By {{ blog.author }} on {{ blog.published_date|date }}</p>
+            <div class="card-text">
+                {{ blog.content|safe }}
+            </div>
+            {% if user == blog.author or user.is_staff %}
+            <a href="{% url 'blog:blog_edit' pk=blog.pk %}" class="btn btn-primary mt-3">Edit Post</a>
+            {% endif %}
+            <a href="{% url 'blog:blog_list' %}" class="btn btn-secondary mt-3">Back to Blog List</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

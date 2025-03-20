@@ -1,0 +1,162 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container text-center py-5">
+        <h1 class="display-3 text-white mb-4 animated slideInDown">Client Reviews</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'saloon:index' %}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Reviews</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Testimonial Start -->
+<div class="container-xxl py-5" id="reviews">
+    <div class="container">
+        <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+            <h1 class="display-6 mb-4">What Our Clients Say!</h1>
+            {% if review_count > 0 %}
+                <div class="d-flex justify-content-center align-items-center mb-3">
+                    <div class="star-rating me-2">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= total_rating %}
+                                <i class="fas fa-star fa-2x text-warning"></i>
+                            {% else %}
+                                <i class="far fa-star fa-2x text-warning"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="text-muted">
+                        <span class="h4 text-primary">{{ total_rating }}/5</span>
+                        <br>
+                        <small>Based on {{ review_count }} reviews</small>
+                    </div>
+                </div>
+            {% endif %}
+            
+            {% if user.is_authenticated %}
+                <div class="mt-4">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#selectServiceModal">
+                        <i class="fas fa-pen me-2"></i>Write Your Review
+                    </button>
+                </div>
+            {% else %}
+                <div class="mt-4">
+                    <a href="{% url 'userauths:sign-in' %}?next={{ request.path }}" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login to Write Review
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if reviews %}
+            <div class="row g-4">
+                {% for review in reviews %}
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.{{ forloop.counter }}s">
+                        <div class="service-item position-relative h-100">
+                            <div class="rounded p-4">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="star-rating">
+                                        {% for i in "12345"|make_list %}
+                                            {% if forloop.counter <= review.rating %}
+                                                <i class="fas fa-star text-warning"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-warning"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <small class="text-muted">{{ review.created_at|date:"F d, Y" }}</small>
+                                </div>
+                                <p class="mb-4">{{ review.comment }}</p>
+                                <div class="d-flex align-items-center">
+                                    <img class="flex-shrink-0 rounded-circle" src="{% static 'img/user-avatar.png' %}" alt="User" style="width: 45px; height: 45px;">
+                                    <div class="ms-3">
+                                        <h6 class="fw-bold mb-1">{{ review.user.username }}</h6>
+                                        <small>for {{ review.service.name }}</small>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <a class="btn btn-sm btn-outline-primary" href="{% url 'saloon:service_detail' review.service.id %}">
+                                        View Service <i class="bi bi-arrow-right ms-1"></i>
+                                    </a>
+                                    {% if user == review.user %}
+                                        <a href="{% url 'saloon:edit_review' review.service.id %}" class="btn btn-sm btn-outline-warning ms-2">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a href="{% url 'saloon:delete_review' review.service.id %}" class="btn btn-sm btn-outline-danger ms-2">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-comments fa-4x text-muted mb-4"></i>
+                <h3 class="text-muted">No Reviews Yet</h3>
+                <p class="lead">Be the first to share your experience!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<!-- Testimonial End -->
+
+<!-- Service Selection Modal -->
+<div class="modal fade" id="selectServiceModal" tabindex="-1" aria-labelledby="selectServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="selectServiceModalLabel">Select Service to Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="list-group">
+                    {% for service in services %}
+                        {% if not service.user_has_reviewed %}
+                            <a href="{% url 'saloon:add_review' service.id %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ service.name }}</h6>
+                                    <small>${{ service.cost }}</small>
+                                </div>
+                                <small class="text-muted">{{ service.description|truncatechars:100 }}</small>
+                            </a>
+                        {% endif %}
+                    {% empty %}
+                        <div class="text-center py-3">
+                            <p class="text-muted mb-0">No services available to review.</p>
+                            <small>You may have already reviewed all services.</small>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .star-rating {
+        color: #ffc107;
+    }
+    .service-item {
+        box-shadow: 0 0 45px rgba(0, 0, 0, .07);
+        transition: .5s;
+    }
+    .service-item:hover {
+        transform: translateY(-10px);
+    }
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+</style>
+{% endblock %}

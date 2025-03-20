@@ -1,0 +1,32 @@
+{% extends 'partials/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="text-center">Search Results</h2>
+
+    {% if services %}
+        <div class="row">
+            {% for service in services %}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ service.name }}</h5>
+                
+                        <p class="fw-bold text-primary">Price: Rs{{ service.cost }}</p>
+                        <a href="{% url 'saloon:service_detail' service.id %}" class="btn btn-outline-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center mt-4 text-muted">No matching services found.</p>
+    {% endif %}
+
+    <!-- Back to Home Button -->
+    <div class="text-center mt-4">
+        <a href="{% url 'saloon:index' %}" class="btn btn-primary">Back to Home</a>
+    </div>
+</div>
+{% endblock %}

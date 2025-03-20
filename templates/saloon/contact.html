@@ -1,0 +1,227 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+    
+<style>
+    /* Hero Section Styling */
+    .hero-wrap {
+        position: relative;
+        background-size: cover !important;
+        background-position: center;
+        background-attachment: fixed;
+    }
+    .hero-wrap .overlay {
+        background: rgba(0, 0, 0, 0.6);
+    }
+    .breadcrumbs {
+        font-size: 16px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .breadcrumbs a {
+        color:#f80099;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+    .breadcrumbs a:hover {
+        color: #ff6b6b;
+    }
+    .bread {
+        font-size: 42px;
+        font-weight: bold;
+    }
+    
+    /* Contact Info Section */
+    .contact-info .border {
+        background: #fff;
+        transition: all 0.3s ease-in-out;
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .contact-info .border:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    .contact-info .icon {
+        font-size: 24px;
+        color: #f80099;
+    }
+    
+    /* Contact Form */
+    .contact-form {
+        background: #fff;
+        border-radius: 10px;
+        padding: 40px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+    .contact-form h3 {
+        font-size: 28px;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .contact-form .form-group {
+        margin-bottom: 20px;
+    }
+    .contact-form input,
+    .contact-form textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 25px;
+        border: 2px solid #ddd;
+        font-size: 16px;
+        transition: 0.3s;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+        border-color: #f80099;
+        outline: none;
+        box-shadow: 0 0 8px rgba(248, 180, 0, 0.3);
+    }
+    .contact-form textarea {
+        border-radius: 10px;
+        resize: none;
+        height: 120px;
+    }
+    .contact-form input[type="submit"] {
+        background: #f80099;
+        border: none;
+        padding: 12px 30px;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        border-radius: 30px;
+        transition: 0.3s;
+    }
+    .contact-form input[type="submit"]:hover {
+        background: #ff6b6b;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(255, 107, 107, 0.3);
+    }
+
+    
+
+
+    
+    
+    /* Map Section */
+    #map {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .contact-info .border {
+            text-align: center;
+        }
+        .contact-info .icon {
+            display: block;
+            margin-bottom: 10px;
+        }
+    }
+    </style>
+    
+    <section class="hero-wrap hero-wrap-2 js-fullheight" style="background-image: url('static/images/bg_3.jpg');" data-stellar-background-ratio="0.5">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-start">
+          <div class="col-md-9 ftco-animate pb-5">
+          	<p class="breadcrumbs"><span class="mr-2"><a href="{% url 'saloon:index' %}">Home <i class="ion-ios-arrow-forward"></i></a></span> <span>Contact <i class="ion-ios-arrow-forward"></i></span></p>
+            <h1 class="mb-3 bread text-center">Contact Us</h1>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ftco-section contact-section">
+      <div class="container">
+        <div class="row d-flex mb-5 contact-info">
+        	<div class="col-md-4">
+        		<div class="row mb-5">
+		          <div class="col-md-12">
+		          	<div class="border w-100 p-4 rounded mb-2 d-flex">
+			          	<div class="icon mr-3">
+			          		<span class="icon-map-o"></span>
+			          	</div>
+			            <p><span>Address:</span> 198 West 21th Street, Suite 721 Kochi 10016</p>
+			          </div>
+		          </div>
+		          <div class="col-md-12">
+		          	<div class="border w-100 p-4 rounded mb-2 d-flex">
+			          	<div class="icon mr-3">
+			          		<span class="icon-mobile-phone"></span>
+			          	</div>
+			            <p><span>Phone:</span> <a href="tel://1234567920">+91 9999444888</a></p>
+			          </div>
+		          </div>
+		          <div class="col-md-12">
+		          	<div class="border w-100 p-4 rounded mb-2 d-flex">
+			          	<div class="icon mr-3">
+			          		<span class="icon-envelope-o"></span>
+			          	</div>
+			            <p><span>Email:</span> <a href="mailto:info@yoursite.com">velvettouch@gmail.com</a></p>
+			          </div>
+		          </div>
+		        </div>
+          </div>
+            
+          <div class="col-md-8 block-9 mb-md-5">
+  <form method="POST" action="#" class="bg-light p-5 contact-form">
+    {% csrf_token %}
+    <div class="form-group">
+      {{ form.name.label }} {{ form.name }}
+      {% if form.name.errors %}
+        <div class="invalid-feedback">
+          {{ form.name.errors }}
+        </div>
+      {% endif %}
+    </div>
+    <div class="form-group">
+      {{ form.email.label }} {{ form.email }}
+      {% if form.email.errors %}
+        <div class="invalid-feedback">
+          {{ form.email.errors }}
+        </div>
+      {% endif %}
+    </div>
+    <div class="form-group">
+      {{ form.subject.label }} {{ form.subject }}
+      {% if form.subject.errors %}
+        <div class="invalid-feedback">
+          {{ form.subject.errors }}
+        </div>
+      {% endif %}
+    </div>
+    <div class="form-group">
+      {{ form.message.label }} {{ form.message }}
+      {% if form.message.errors %}
+        <div class="invalid-feedback">
+          {{ form.message.errors }}
+        </div>
+      {% endif %}
+    </div>
+    <div class="form-group">
+      <input type="submit" value="Send Message" class="btn btn-primary py-3 px-5">
+    </div>
+  </form>
+</div>
+          
+          </div>
+        </div>
+        <div class="row justify-content-center">
+        	<div class="col-md-12">
+        		<div id="map" class="bg-white"></div>
+        	</div>
+        </div>
+      </div>
+    </section>
+	
+
+    {% endblock content %}

@@ -1,0 +1,85 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>{{ service.name }} - Reviews</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h4>Average Rating</h4>
+                                <div class="display-4">{{ avg_rating }}/5</div>
+                                <div class="star-rating">
+                                    {% for i in "12345"|make_list %}
+                                        {% if forloop.counter <= avg_rating %}
+                                            <i class="fas fa-star text-warning"></i>
+                                        {% else %}
+                                            <i class="far fa-star text-warning"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <p class="mt-2">Based on {{ reviews.count }} reviews</p>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <h4>About {{ service.name }}</h4>
+                            <p>{{ service.description }}</p>
+                            <p><strong>Cost:</strong> ${{ service.cost }}</p>
+                        </div>
+                    </div>
+
+                    <div class="reviews-section">
+                        <h4 class="mb-3">Customer Reviews</h4>
+                        {% if reviews %}
+                            {% for review in reviews %}
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div>
+                                                <h5 class="mb-0">{{ review.customer.username }}</h5>
+                                                <small class="text-muted">{{ review.created_at|date:"F d, Y" }}</small>
+                                            </div>
+                                            <div class="star-rating">
+                                                {% for i in "12345"|make_list %}
+                                                    {% if forloop.counter <= review.rating %}
+                                                        <i class="fas fa-star text-warning"></i>
+                                                    {% else %}
+                                                        <i class="far fa-star text-warning"></i>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <p class="mb-0">{{ review.comment }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="alert alert-info">
+                                No reviews yet for this service.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .star-rating {
+        color: #ffc107;
+    }
+    .reviews-section {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+</style>
+{% endblock %}

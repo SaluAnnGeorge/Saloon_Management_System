@@ -1,0 +1,123 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-5" style="background-color: #f8f9fa;">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg border-0">
+                    <!-- Header -->
+                    <div class="card-header bg-primary text-white text-center py-4 border-0">
+                        <h3 class="mb-0">Velvet Touch</h3>
+                        <p class="mb-0">Beauty & Wellness</p>
+                    </div>
+
+                    <!-- Receipt Content -->
+                    <div class="card-body p-4">
+                        <!-- Receipt Number and Date -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <h6 class="text-muted mb-1">Receipt #{{ appointment.id }}</h6>
+                                <small class="text-muted">{{ appointment.updated_at|date:"F d, Y H:i" }}</small>
+                            </div>
+                            {% if payment %}
+                            <div class="text-end">
+                                <h6 class="text-muted mb-1">Transaction ID</h6>
+                                <small class="text-muted">{{ payment.transaction_id }}</small>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Details Grid -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h6 class="text-uppercase text-muted mb-3">From</h6>
+                                <p class="mb-1"><strong>Velvet Touch Salon</strong></p>
+                                <p class="mb-1 text-muted">123 Fashion Street</p>
+                                <p class="mb-1 text-muted">New York, NY 10001</p>
+                                <p class="text-muted">+1 (555) 123-4567</p>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <h6 class="text-uppercase text-muted mb-3">Client Details</h6>
+                                <p class="mb-1"><strong>{{ appointment.customer_name }}</strong></p>
+                                <p class="mb-1 text-muted">{{ appointment.customer.email }}</p>
+                                <p class="mb-1 text-muted">{{ appointment.appointment_date|date:"F d, Y" }}</p>
+                                <p class="text-muted">{{ appointment.appointment_time }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Service Details -->
+                        <div class="table-responsive mb-4">
+                            <table class="table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Service</th>
+                                        <th class="text-end">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <p class="mb-1"><strong>{{ appointment.service.name }}</strong></p>
+                                            <small class="text-muted">{{ appointment.service.description|truncatewords:10 }}</small>
+                                        </td>
+                                        <td class="text-end">${{ appointment.total_amount }}</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <td class="text-end"><strong>Total</strong></td>
+                                        <td class="text-end"><strong>${{ appointment.total_amount }}</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <!-- Payment Info -->
+                        <div class="bg-light p-3 rounded mb-4">
+                            <div class="row">
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Payment Status</small>
+                                    <span class="badge bg-success">{{ appointment.payment_status|title }}</span>
+                                </div>
+                                {% if payment %}
+                                <div class="col-6 text-end">
+                                    <small class="text-muted d-block">Payment Method</small>
+                                    <span class="badge bg-primary">{{ payment.payment_method|title }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{% url 'appointment:my_appointments' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back
+                            </a>
+                            <button onclick="window.print()" class="btn btn-primary no-print">
+                                <i class="fas fa-print me-2"></i>Print
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@media print {
+    .container-fluid {
+        padding: 0 !important;
+    }
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .no-print {
+        display: none !important;
+    }
+}
+</style>
+{% endblock %}

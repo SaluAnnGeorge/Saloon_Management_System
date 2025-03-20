@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            margin-top: 50px;
+            max-width: 1200px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 34px;
+            font-weight: 700;
+        }
+
+        .btn-export {
+            background-color: #34db5b;
+            color: #ffffff;
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            margin-bottom: 25px;
+            display: block;
+            width: 100%;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-export:hover {
+            background-color: #35b929;
+            transform: translateY(-3px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            table-layout: fixed;
+        }
+
+        table th, table td {
+            padding: 18px;
+            text-align: left;
+            border: 1px solid #ecf0f1;
+            color: #34495e;
+            font-size: 16px;
+        }
+
+        table th {
+            background-color: #3498db;
+            color: #ffffff;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #ecf0f1;
+        }
+
+        table tbody tr:hover {
+            background-color: #e1f0ff;
+        }
+
+        table td ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        table td ul li {
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .no-appointments {
+            color: #95a5a6;
+            font-style: italic;
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-body {
+            padding: 35px;
+        }
+
+        .card-header {
+            background-color: #2980b9;
+            color: white;
+            font-weight: 700;
+            padding: 15px 25px;
+        }
+
+        .card-footer {
+            background-color: #f5f5f5;
+            text-align: center;
+            padding: 12px;
+            color: #7f8c8d;
+        }
+
+        .pagination {
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            color: #3498db;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0 5px;
+            font-size: 16px;
+        }
+
+        .pagination a:hover {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 28px;
+            }
+
+            .btn-export {
+                font-size: 16px;
+            }
+
+            table td, table th {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Customer Report</h2>
+        
+        <!-- Button to download the report -->
+        <a href="?export=true" class="btn-export">Export to Excel</a>
+
+        <!-- Table to display customers -->
+        <div class="card">
+            <div class="card-header">Customer Details</div>
+            <div class="card-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Appointments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in customers %}
+                            <tr>
+                                <td>{{ customer.full_name }}</td>
+                                <td>{{ customer.email }}</td>
+                                <td>{{ customer.phone }}</td>
+                                <td>
+                                    <ul>
+                                        {% for appointment in customer.appointment_set.all %}
+                                            <li>
+                                                {{ appointment.appointment_date }} - 
+                                                {{ appointment.service.name }} -
+                                                {{ appointment.status }} -
+                                                {{ appointment.payment_status }}
+                                            </li>
+                                        {% empty %}
+                                            <li class="no-appointments">No appointments</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+           
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

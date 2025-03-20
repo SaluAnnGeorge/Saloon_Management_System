@@ -1,0 +1,90 @@
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+
+<style>
+
+
+    
+.nav-link {
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+    background-color: rgba(30, 30, 30, 0.1);
+    text-decoration: none;
+}
+
+.nav-link .bi {
+    font-size: 18px;
+}
+
+.bg-dark {
+    background-color: #2c3e50 !important;
+}
+
+h1.h4 {
+    font-weight: bold;
+    color: #f39c12;
+}
+
+</style>
+
+<div class="bg-dark text-white vh-100 p-3" >
+    <!-- Sidebar Header -->
+    <div class="d-flex align-items-center mb-4">
+        <i class="fas fa-hotel hotel-icon me-2"></i>
+        <h1 class="h4 mb-0">Velvet Touch</h1>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <nav>
+        <ul class="nav flex-column">
+
+
+            <li class="nav-item mb-2">
+                <a href="{% url 'saloon:index' %}" class="nav-link text-white">
+                    <i class="bi bi-house-door me-2"></i> Home
+                </a>
+            </li>
+            <!-- Dashboard -->
+            <li class="nav-item mb-2">
+                <a href="{% url 'user_dashboard:dashboard' %}" class="nav-link text-white">
+                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                </a>
+            </li>
+
+            
+
+            <!-- All Bookings -->
+            <li class="nav-item mb-2">
+                <a href="{% url 'appointment:my_appointments' %}" class="nav-link text-white">
+                    <i class="bi bi-calendar-check me-2"></i> All Bookings
+                </a>
+            </li>
+
+           
+            <!-- My Profile -->
+            <li class="nav-item mb-2">
+                <a href="{% url 'user_dashboard:profile' %}" class="nav-link text-white">
+                    <i class="bi bi-person-circle me-2"></i> My Profile
+                </a>
+            </li>
+
+            <!-- Change Password -->
+            <li class="nav-item mb-2">
+                <a href="{% url 'user_dashboard:change_password' %}" class="nav-link text-white">
+                    <i class="bi bi-shield-lock me-2"></i> Change Password
+                </a>
+            </li>
+
+            <!-- Logout -->
+            <li class="nav-item">
+                <a href="{% url 'userauths:sign-out' %}" class="nav-link text-white">
+                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

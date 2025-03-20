@@ -1,0 +1,110 @@
+{% extends 'partials/dashboard_base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="dashboard-header text-center mt-4">
+            <h2 class="text-primary font-weight-bold">Welcome back, {{ request.user.username }}</h2>
+            <p class="lead text-muted">Here’s an overview of your recent appointments and total amount spent.</p>
+        </div>
+
+        <div class="container mt-5">
+            <!-- Cards Row -->
+            <div class="row justify-content-center">
+                <!-- Card for Total Appointments -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-lg rounded" style="height:200px; transition: all 0.3s ease;">
+                        <div class="card-body" style="background: linear-gradient(to right, #f8d7da, #f4c6c1);">
+                            <p class="card-text text-center" style="font-size: 50px; font-weight: bold;">{{ total_appointments }}</p>
+                            <h5 class="card-title text-center" style="font-size: 18px;">Total Appointments in the salon</h5>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Confirmed Appointments -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-lg rounded" style="height:200px; transition: all 0.3s ease;">
+                        <div class="card-body" style="background: linear-gradient(to right, #d4edda, #b8e0a5);">
+                            <p class="card-text text-center" style="font-size: 50px; font-weight: bold;">{{ confirmed_appointments }}</p>
+                            <h5 class="card-title text-center" style="font-size: 18px;"> Your Confirmed Appointments</h5>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for Rejected Appointments -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-lg rounded" style="height:200px; transition: all 0.3s ease;">
+                        <div class="card-body" style="background: linear-gradient(to right, #f8d7da, #f4c6c1);">
+                            <p class="card-text text-center" style="font-size: 50px; font-weight: bold;">{{ rejected_appointments }}</p>
+                            <h5 class="card-title text-center" style="font-size: 18px;">Rejected Appointments</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart Section -->
+            <div class="row mt-4"> <!-- Added mt-4 to create space above the chart -->
+                <div class="col-md-8 offset-md-2 mb-4">
+                    <canvas id="appointmentsChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script for Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('appointmentsChart').getContext('2d');
+            var appointmentsChart = new Chart(ctx, {
+                type: 'bar', // Choose the chart type (bar chart)
+                data: {
+                    labels: ['Total', 'Confirmed', 'Rejected'], // X-axis labels
+                    datasets: [{
+                        label: 'Appointments Count', // Label for the chart
+                        data: [
+                            {{ total_appointments }},
+                            {{ confirmed_appointments }},
+                            {{ rejected_appointments }}
+                        ], // Y-axis data points (counts)
+                        backgroundColor: ['#007bff', '#28a745', '#dc3545'], // Colors for each bar
+                        borderColor: ['#0056b3', '#218838', '#c82333'], // Border colors
+                        borderWidth: 1,
+                        borderRadius: 5, // Rounded bars
+                        hoverBackgroundColor: ['#0056b3', '#218838', '#c82333'], // Hover effect
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    animation: {
+                        duration: 1000, // Animation duration for smoother effect
+                        easing: 'easeOutBounce' // Easing effect for animation
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                fontSize: 16,
+                                fontColor: '#333'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                fontSize: 16,
+                                fontColor: '#333'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

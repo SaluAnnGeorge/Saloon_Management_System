@@ -1,0 +1,227 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-primary text-white text-center py-4">
+                        <h3 class="mb-0">Complete Your Payment</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Appointment Details Section -->
+                        <div class="mb-4 bg-light p-4 rounded">
+                            <h5 class="border-bottom pb-2">Appointment Details</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Service:</strong> {{ appointment.service.name }}</p>
+                                    <p><strong>Date:</strong> {{ appointment.appointment_date|date:"M d, Y" }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Time:</strong> {{ appointment.appointment_time|time:"g:i a" }}</p>
+                                    <p><strong>Amount:</strong> ₹{{ appointment.total_amount }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Method Selection -->
+                        <div class="payment-methods mb-4">
+                            <h5 class="mb-3">Select Payment Method</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="card payment-method-card" onclick="selectPaymentMethod('card')" id="card-method">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-credit-card fa-2x mb-2"></i>
+                                            <h6>Credit/Debit Card</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="card payment-method-card" onclick="selectPaymentMethod('upi')" id="upi-method">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-mobile-alt fa-2x mb-2"></i>
+                                            <h6>UPI Payment</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Payment Form -->
+                        <form method="POST" action="{% url 'appointment:process_payment' appointment.id %}" id="cardPaymentForm" class="payment-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="payment_type" value="card">
+                            
+                            <div class="mb-3">
+                                <label for="card_number" class="form-label">Card Number</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="card_number" name="card_number" maxlength="19" required>
+                                    <span class="input-group-text"><i class="fas fa-credit-card"></i></span>
+                                </div>
+                                <div class="invalid-feedback">Please enter a valid card number</div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="expiry" class="form-label">Expiry Date</label>
+                                    <input type="text" class="form-control" id="expiry" name="expiry" placeholder="MM/YY" maxlength="5" required>
+                                    <div class="invalid-feedback">Enter valid expiry date (MM/YY)</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="cvv" class="form-label">CVV</label>
+                                    <input type="text" class="form-control" id="cvv" name="cvv" maxlength="3" required>
+                                    <div class="invalid-feedback">Enter valid CVV</div>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg">Pay ₹{{ appointment.total_amount }}</button>
+                            </div>
+                        </form>
+
+                        <!-- UPI Payment Form -->
+                        <form method="POST" action="{% url 'appointment:process_payment' appointment.id %}" id="upiPaymentForm" class="payment-form" style="display: none;">
+                            {% csrf_token %}
+                            <input type="hidden" name="payment_type" value="upi">
+                            
+                            <div class="mb-3">
+                                <label for="upi_id" class="form-label">UPI ID</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="upi_id" name="upi_id" placeholder="yourname@upi" required>
+                                    <span class="input-group-text"><i class="fas fa-at"></i></span>
+                                </div>
+                                <div class="invalid-feedback">Please enter a valid UPI ID</div>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg">Pay ₹{{ appointment.total_amount }}</button>
+                            </div>
+                        </form>
+
+                        <div class="mt-4 text-center text-muted">
+                            <small><i class="fas fa-lock"></i> Secure payment by Velvet Touch</small><br>
+                            <small>All payments are processed in Indian Rupees (INR)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.payment-method-card {
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid #dee2e6;
+}
+
+.payment-method-card:hover {
+    border-color: #0d6efd;
+    transform: translateY(-2px);
+}
+
+.payment-method-card.selected {
+    border-color: #0d6efd;
+    background-color: #f8f9fa;
+}
+
+.payment-method-card i {
+    color: #0d6efd;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Card number formatting
+    const cardInput = document.getElementById('card_number');
+    cardInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+        e.target.value = value;
+    });
+
+    // Expiry date formatting
+    const expiryInput = document.getElementById('expiry');
+    expiryInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+            value = value.substring(0, 2) + '/' + value.substring(2);
+        }
+        e.target.value = value;
+    });
+
+    // CVV input - only allow numbers
+    const cvvInput = document.getElementById('cvv');
+    cvvInput.addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/\D/g, '');
+    });
+
+    // Form validation
+    const cardForm = document.getElementById('cardPaymentForm');
+    cardForm.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        const cardNumber = cardInput.value.replace(/\s/g, '');
+        if (cardNumber.length !== 16) {
+            cardInput.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        const expiry = expiryInput.value;
+        const expiryRegex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+        if (!expiryRegex.test(expiry)) {
+            expiryInput.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        if (cvvInput.value.length !== 3) {
+            cvvInput.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+
+    // UPI validation
+    const upiForm = document.getElementById('upiPaymentForm');
+    const upiInput = document.getElementById('upi_id');
+    upiForm.addEventListener('submit', function(e) {
+        const upiRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+$/;
+        if (!upiRegex.test(upiInput.value)) {
+            upiInput.classList.add('is-invalid');
+            e.preventDefault();
+        }
+    });
+});
+
+function selectPaymentMethod(method) {
+    const cardMethod = document.getElementById('card-method');
+    const upiMethod = document.getElementById('upi-method');
+    const cardForm = document.getElementById('cardPaymentForm');
+    const upiForm = document.getElementById('upiPaymentForm');
+
+    if (method === 'card') {
+        cardMethod.classList.add('selected');
+        upiMethod.classList.remove('selected');
+        cardForm.style.display = 'block';
+        upiForm.style.display = 'none';
+    } else {
+        upiMethod.classList.add('selected');
+        cardMethod.classList.remove('selected');
+        upiForm.style.display = 'block';
+        cardForm.style.display = 'none';
+    }
+}
+
+// Select card payment by default
+document.addEventListener('DOMContentLoaded', function() {
+    selectPaymentMethod('card');
+});
+</script>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .alert-container {
+        margin-bottom: 20px;
+    }
+
+    .alert {
+        border-radius: 8px;
+        font-size: 16px;
+        padding: 15px;
+    }
+
+    /* Force all alerts to be red */
+    .alert {
+        /* background-color: #ff4d4d !important; Red background */
+        color: white !important; /* White text */
+        border: 1px solid #d9534f;
+    }
+
+    .btn-close {
+        color: white; /* White close button */
+        opacity: 1;
+    }
+
+    .btn-close:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+</style>
+
+
+<!-- Header Start -->
+<div class="container-fluid bg-breadcrumb py-5">
+    <div class="container text-center py-5">
+        <h3 class="text-white display-3 mb-4">Appointment</h3>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'saloon:index' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Pages</a></li>
+            <li class="breadcrumb-item active text-white">Appointment</li>
+        </ol>    
+    </div>
+</div>
+<!-- Header End -->
+
+<!-- Appointment Start -->
+<div class="container-fluid appointment py-5" style="background: rgba(114, 6, 49, 0.5);">
+    <div class="container py-5">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <div class="appointment-form p-5">
+                    <p class="fs-4 text-uppercase text-primary">Get In Touch</p>
+                    <h1 class="display-4 mb-4 text-white">Get Appointment</h1>
+
+                    <!-- Display Messages -->
+                    {% if messages %}
+                        <div class="alert-container">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form action="{% url 'appointment:book_appointment' %}" method="post">
+                        {% csrf_token %}
+                        <div class="row gy-3 gx-4">
+                            <div class="col-lg-12">
+                                <input type="text" name="customer_name" class="form-control py-3 border-0" 
+                                       placeholder="Your Name" style="height: 55px;" required>
+                            </div>
+                            <div class="col-lg-12">
+                                <select name="service" class="form-select py-3 border-0" style="height: 55px;" required>
+                                    <option value="">Select Service</option>
+                                    {% for service in services %}
+                                    <option value="{{ service.id }}">{{ service.name }} - Rs.{{ service.cost }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <input type="date" name="appointment_date" class="form-control py-3 border-0" 
+                                       placeholder="Select Date" style="height: 55px;" required>
+                            </div>
+                            <div class="col-lg-6">
+                                <input type="time" name="appointment_time" class="form-control py-3 border-0" 
+                                       placeholder="Select Time" style="height: 55px;" required>
+                            </div>
+                            <div class="col-lg-12">
+                                <button class="btn btn-primary w-100 py-3 px-5" type="submit">Book Appointment</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="appointment-time p-5">
+                    <h1 class="display-5 mb-4">Opening Hours</h1>
+                    <div class="d-flex justify-content-between fs-5 text-white">
+                        <p>Saturday:</p>
+                        <p>09:00 AM - 07:00 PM</p>
+                    </div>
+                    <div class="d-flex justify-content-between fs-5 text-white">
+                        <p>Sunday:</p>
+                        <p>09:00 AM - 07:00 PM</p>
+                    </div>
+                    <div class="d-flex justify-content-between fs-5 text-white">
+                        <p>Monday:</p>
+                        <p>09:00 AM - 07:00 PM</p>
+                    </div>
+                    <div class="d-flex justify-content-between fs-5 text-white">
+                        <p>Tuesday:</p>
+                        <p>09:00 AM - 07:00 PM</p>
+                    </div>
+                    <div class="d-flex justify-content-between fs-5 text-white">
+                        <p>Wednesday:</p>
+                        <p>09:00 AM - 07:00 PM</p>
+                    </div>
+                    <div class="d-flex justify-content-between fs-5 text-white">
+                        <p>Thursday:</p>
+                        <p>09:00 AM - 07:00 PM</p>
+                    </div>
+                    <div class="d-flex justify-content-between fs-5 text-white">
+                        <p>Friday:</p>
+                        <p>09:00 AM - 07:00 PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Appointment End -->
+{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+<link href="{% static 'lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
+<link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'lib/wow/wow.min.js' %}"></script>
+<script src="{% static 'lib/easing/easing.min.js' %}"></script>
+<script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+<script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
+<script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+<script src="{% static 'lib/lightbox/js/lightbox.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            let alerts = document.querySelectorAll(".alert");
+            alerts.forEach(alert => {
+                alert.classList.add("fade");
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 6000); // Messages disappear after 3 seconds
+    });
+    </script>
+    
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container text-center py-5">
+        <h1 class="display-3 text-white mb-4 animated slideInDown">Services</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'saloon:index' %}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Services</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Service Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+            <p class="d-inline-block bg-secondary text-primary py-1 px-4">Services</p>
+            <h1 class="text-uppercase">Our Salon Services</h1>
+        </div>
+
+        <!-- Categories Filter -->
+        <div class="text-center mb-4">
+            <div class="btn-group" role="group" aria-label="Service Categories">
+                <a href="{% url 'saloon:service' %}" class="btn {% if not request.resolver_match.kwargs.category_id %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    All
+                </a>
+                {% for category in categories %}
+                    <a href="{% url 'saloon:service_by_category' category.id %}" 
+                       class="btn {% if request.resolver_match.kwargs.category_id == category.id %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                        {{ category.category_name }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% for service in services %}
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="service-item position-relative overflow-hidden bg-secondary d-flex h-100 p-5 ps-0">
+                    <div class="bg-dark d-flex flex-shrink-0 align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <img class="img-fluid" src="{{ service.image.url }}" alt="{{ service.name }}">
+                    </div>
+                    <div class="ps-4">
+                        <h3 class="text-uppercase mb-3">{{ service.name }}</h3>
+                        <div class="mb-2">
+                            <div class="star-rating">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= service.avg_rating %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-warning"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="text-muted ms-2">({{ service.review_count }} reviews)</span>
+                            </div>
+                        </div>
+                        <p class="text-light mb-4">{{ service.description|truncatechars:150 }}</p>
+                        <p class="text-light mb-4"><strong>Cost:</strong> ${{ service.cost }}</p>
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-primary" href="{% url 'saloon:service_detail' service.id %}">
+                                <i class="fas fa-info-circle me-2"></i>View Details
+                            </a>
+                            <a class="btn btn-outline-primary" href="{% url 'appointment:book_appointment' %}?service={{ service.id }}">
+                                <i class="fas fa-calendar-plus me-2"></i>Book Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Service End -->
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .star-rating {
+        color: #ffc107;
+    }
+    .service-item {
+        transition: transform 0.3s ease;
+    }
+    .service-item:hover {
+        transform: translateY(-5px);
+    }
+    .btn-group {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .btn-group .btn {
+        margin: 0.25rem;
+    }
+</style>
+{% endblock %}

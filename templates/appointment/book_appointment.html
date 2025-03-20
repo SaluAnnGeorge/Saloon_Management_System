@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Book an Appointment</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="service">Select Service</label>
+                            <select name="service" id="service" class="form-control" required>
+                                <option value="">Choose a service...</option>
+                                {% for service in services %}
+                                <option value="{{ service.id }}">{{ service.name }} - ₹{{ service.cost }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="appointment_date">Appointment Date</label>
+                            <input type="date" name="appointment_date" id="appointment_date" class="form-control" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="appointment_time">Preferred Time</label>
+                            <input type="time" name="appointment_time" id="appointment_time" class="form-control" required>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Book Appointment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

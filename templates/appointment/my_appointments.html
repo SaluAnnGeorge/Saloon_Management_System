@@ -1,0 +1,146 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Your Appointments</h2>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Service</th>
+                <th>Appointment Date</th>
+                <th>Appointment Time</th>
+                <th>Status</th>
+                <th>Payment Status</th>
+                <th>Total Amount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in appointments %}
+            <tr id="appointment-row-{{ appointment.id }}">
+                <td>{{ appointment.customer_name }}</td>
+                <td>{{ appointment.service.name }}</td>
+                <td>{{ appointment.appointment_date }}</td>
+                <td>{{ appointment.appointment_time }}</td>
+                <td>
+                    <span class="badge 
+                        {% if appointment.status == 'approved' %}bg-success
+                        {% elif appointment.status == 'pending' %}bg-warning
+                        {% elif appointment.status == 'rejected' %}bg-danger
+                        {% else %}bg-secondary{% endif %}">
+                        {{ appointment.status|title }}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge 
+                        {% if appointment.payment_status == 'completed' %}bg-success
+                        {% elif appointment.payment_status == 'pending' %}bg-warning
+                        {% else %}bg-danger{% endif %}">
+                        {{ appointment.payment_status|title }}
+                    </span>
+                </td>
+                <td>Rs.{{ appointment.total_amount }}</td>
+                <td>
+                    {% if appointment.status == 'pending' %}
+                        <!-- No action for pending status -->
+                    {% endif %}
+                    
+                    {% if appointment.status == 'approved' and appointment.payment_status == 'pending' %}
+                        <a href="{% url 'appointment:process_payment' appointment.id %}" 
+                           class="btn btn-sm btn-primary">
+                            Pay Now
+                        </a>
+                    {% endif %}
+
+                    {% if appointment.payment_status == 'completed' and appointment.status != 'cancelled' %}
+                        <a href="{% url 'user_dashboard:cancel_booking' appointment.id %}" 
+                           class="btn btn-sm btn-danger">
+                            Cancel Appointment
+                        </a>
+                    {% elif appointment.status == 'cancelled' %}
+                        <span class="text-muted">Cancelled appointment</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statusButtons = document.querySelectorAll('.check-status');
+    const statusModal = new bootstrap.Modal(document.getElementById('statusModal'));
+    const statusMessage = document.getElementById('statusMessage');
+    const paymentButton = document.getElementById('paymentButton');
+
+    statusButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const appointmentId = this.dataset.appointmentId;
+            
+            fetch(`/appointment/check-status/?appointment_id=${appointmentId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'approved') {
+                        statusMessage.innerHTML = `
+                            <div class="alert alert-success">
+                                Your appointment has been approved! You can now proceed to payment.
+                            </div>`;
+                        paymentButton.href = data.payment_url;
+                        paymentButton.classList.remove('d-none');
+                    } else if (data.status === 'rejected') {
+                        statusMessage.innerHTML = `
+                            <div class="alert alert-danger">
+                                Sorry, your appointment has been rejected.
+                            </div>`;
+                        paymentButton.classList.add('d-none');
+                    } else {
+                        statusMessage.innerHTML = `
+                            <div class="alert alert-warning">
+                                Your appointment is still pending approval. Please check back later.
+                            </div>`;
+                        paymentButton.classList.add('d-none');
+                    }
+                    
+                    // Update the row in the table
+                    const row = document.getElementById(`appointment-row-${appointmentId}`);
+                    if (row) {
+                        const statusCell = row.querySelector('td:nth-child(4)');
+                        const actionsCell = row.querySelector('td:last-child');
+                        
+                        if (data.status === 'approved') {
+                            statusCell.innerHTML = '<span class="badge bg-success">Approved</span>';
+                            if (data.payment_url) {
+                                actionsCell.innerHTML = `
+                                    <a href="${data.payment_url}" class="btn btn-sm btn-primary">Pay Now</a>
+                                `;
+                            }
+                        } else if (data.status === 'rejected') {
+                            statusCell.innerHTML = '<span class="badge bg-danger">Rejected</span>';
+                            actionsCell.innerHTML = '';
+                        }
+                    }
+                    
+                    statusModal.show();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    statusMessage.innerHTML = `
+                        <div class="alert alert-danger">
+                            An error occurred while checking the status. Please try again.
+                        </div>`;
+                    paymentButton.classList.add('d-none');
+                    statusModal.show();
+                });
+        });
+    });
+});
+</script>
+{% endblock %}

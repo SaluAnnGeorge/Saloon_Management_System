@@ -1,0 +1,16 @@
+Django
+djangorestframework
+django-allauth
+django-crispy-forms
+crispy-bootstrap5
+Pillow
+python-dotenv
+psycopg2
+django-filter
+gunicorn
+whitenoise
+requests
+django-cors-headers
+django-jazzmin
+xhtml2pdf
+google-generativeai

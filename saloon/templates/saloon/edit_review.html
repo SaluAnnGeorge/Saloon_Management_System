@@ -1,0 +1,100 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Edit Your Review for {{ service.name }}</h3>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label class="form-label">Rating</label>
+                            <div class="rating-input">
+                                {% for value, label in rating_choices %}
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="rating" 
+                                               id="rating{{ value }}" value="{{ value }}" 
+                                               {% if review.rating == value %}checked{% endif %} required>
+                                        <label class="form-check-label" for="rating{{ value }}">
+                                            {% for i in "12345"|make_list %}
+                                                {% if forloop.counter <= value %}
+                                                    <i class="fas fa-star text-warning"></i>
+                                                {% else %}
+                                                    <i class="far fa-star text-warning"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="comment" class="form-label">Your Review</label>
+                            <textarea class="form-control" id="comment" name="comment" rows="4" 
+                                      required>{{ review.comment }}</textarea>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Update Review</button>
+                            <a href="{% url 'saloon:service_detail' service.id %}" 
+                               class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .rating-input {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+    .form-check-label {
+        cursor: pointer;
+    }
+    .form-check-input {
+        display: none;
+    }
+    .form-check-input:checked + .form-check-label {
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ratingLabels = document.querySelectorAll('.form-check-label');
+        ratingLabels.forEach(label => {
+            label.addEventListener('mouseover', function() {
+                this.style.transform = 'scale(1.1)';
+            });
+            label.addEventListener('mouseout', function() {
+                if (!this.previousElementSibling.checked) {
+                    this.style.transform = 'scale(1)';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

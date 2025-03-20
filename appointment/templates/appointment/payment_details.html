@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col-md-6">
+        <div class="p-3 bg-light rounded">
+            <h5 class="border-bottom pb-2">Appointment Details</h5>
+            <p><strong>Service:</strong> {{ appointment.service.name }}</p>
+            <p><strong>Date:</strong> {{ appointment.appointment_date|date:"D, M d, Y" }}</p>
+            <p><strong>Time:</strong> {{ appointment.appointment_time|time:"g:i A" }}</p>
+            <p><strong>Status:</strong> <span class="badge bg-success">Confirmed</span></p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="p-3 bg-light rounded">
+            <h5 class="border-bottom pb-2">Payment Details</h5>
+            <p><strong>Amount Paid:</strong> ₹{{ payment.amount }}</p>
+            <p><strong>Payment Method:</strong> {{ payment.get_payment_method_display }}</p>
+            <p><strong>Transaction ID:</strong> {{ payment.transaction_id }}</p>
+            <p><strong>Date:</strong> {{ payment.payment_date|date:"D, M d, Y" }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <small class="text-muted">
+        <i class="fas fa-envelope me-1"></i>A confirmation email has been sent to your registered email address
+    </small>
+</div>

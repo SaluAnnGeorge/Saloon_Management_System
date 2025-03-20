@@ -1,0 +1,72 @@
+
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Header Start -->
+<div class="container-fluid bg-breadcrumb py-5">
+    <div class="container text-center py-5">
+        <h3 class="text-white display-3 mb-4">Our Services</h3>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'saloon:index' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Pages</a></li>
+            <li class="breadcrumb-item active text-white">Service Page</li>
+        </ol>
+    </div>
+</div>
+<!-- Header End -->
+
+<div class="container">
+    <div class="row">
+        <!-- Sidebar Start -->
+        <div class="col-lg-3">
+            <div class="bg-light border-4 border-end border-primary rounded p-4">
+                <h3 class="text-center mb-4">Categories</h3>
+                <ul class="list-group">
+                    {% for category in categories %}
+                    <li class="list-group-item">
+                        <a href="{% url 'saloon:service_by_category' category.id %}">{{ category.category_name }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <!-- Sidebar End -->
+
+        <!-- Services Start -->
+        <div class="col-lg-9">
+            <div class="mx-auto text-center mb-5" style="max-width: 800px;">
+                <p class="fs-4 text-uppercase text-center text-primary">Our Service</p>
+                <h1 class="display-3">Spa & Beauty Services</h1>
+            </div>
+            <div class="row g-4">
+                {% for service in services %}
+                <div class="col-lg-6">
+                    <div class="services-item bg-light border-4 border-end border-primary rounded p-4">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <div class="services-content text-end">
+                                    <h3>{{ service.name }}</h3>
+                                    
+                                    <p><b style="color: #FF007F;">Cost: Rs.</b> {{ service.cost }}</p>
+
+                                    <a href="{% url 'saloon:service_detail' service.id %}"class="btn btn-primary btn-primary-outline-0 rounded-pill py-2 px-4">View Detail</a>
+
+                                   
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="services-img d-flex align-items-center justify-content-center rounded">
+                                    <img src="{{ service.image.url }}" class="img-fluid rounded" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- Services End -->
+    </div>
+</div>
+{% endblock %}

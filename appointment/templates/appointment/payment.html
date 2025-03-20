@@ -1,0 +1,68 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Payment Details</h2>
+                    
+                    <div class="bg-light p-4 rounded mb-4">
+                        <h5>Appointment Information</h5>
+                        <p><strong>Service:</strong> {{ appointment.service.name }}</p>
+                        <p><strong>Date:</strong> {{ appointment.appointment_date|date:"F d, Y" }}</p>
+                        <p><strong>Time:</strong> {{ appointment.appointment_time|time:"g:i A" }}</p>
+                        <p><strong>Amount:</strong> ₹{{ appointment.total_amount }}</p>
+                    </div>
+
+                    <form method="post" action="{% url 'appointment:process_payment' appointment.id %}" id="paymentForm" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="card_number" class="form-label">Card Number</label>
+                            <input type="text" class="form-control" id="card_number" name="card_number" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="expiry" class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" id="expiry" name="expiry" placeholder="MM/YY" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <input type="text" class="form-control" id="cvv" name="cvv" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="name" class="form-label">Name on Card</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg" id="payButton">
+                                Pay ₹{{ appointment.total_amount }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('paymentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Disable the pay button to prevent double submission
+    document.getElementById('payButton').disabled = true;
+    document.getElementById('payButton').innerHTML = 'Processing...';
+    
+    // Submit the form
+    this.submit();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Appointment Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h2 {
+            color: #333;
+            margin: 0;
+        }
+        .content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .footer {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Appointment Confirmation</h2>
+        </div>
+        
+        <div class="content">
+            <p>Dear {{ appointment.customer.get_full_name }},</p>
+            
+            <p>Thank you for booking an appointment with Velvet Touch Beauty Salon. Your appointment details are as follows:</p>
+            
+            <p>
+                <strong>Service:</strong> {{ appointment.service.name }}<br>
+                <strong>Date:</strong> {% if appointment.appointment_date %}{{ appointment.appointment_date|date:"l, F j, Y" }}{% endif %}<br>
+                <strong>Time:</strong> {% if appointment.appointment_time %}{{ appointment.appointment_time|time:"g:i A" }}{% endif %}
+            </p>
+            
+            <p>Please note that your appointment is pending admin approval. We will notify you once it's approved.</p>
+            
+            <p>If you need to make any changes to your appointment, please visit our website or contact us directly.</p>
+        </div>
+        
+        <div class="footer">
+            <p>
+                Best regards,<br>
+                {{ salon_name }}<br>
+                {{ salon_address }}<br>
+                Phone: {{ salon_phone }}<br>
+                Email: {{ salon_email }}
+            </p>
+        </div>
+    </div>
+</body>
+</html>

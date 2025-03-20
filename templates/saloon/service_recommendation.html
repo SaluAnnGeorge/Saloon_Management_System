@@ -1,0 +1,122 @@
+{% extends 'partials/base.html' %}
+
+{% block content %}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Salon Service Recommendation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            width: 50%;
+            margin: auto;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 10px 0 5px;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .recommendation {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Get a Personalized Salon Service Recommendation</h2>
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        <label for="service_type">Select Service Type:</label>
+        <select name="service_type" id="service_type" required>
+            <option value="">-- Choose a Service --</option>
+            <option value="Haircut">Haircut</option>
+            <option value="Facial">Facial</option>
+            <option value="Manicure">Manicure</option>
+            <option value="Pedicure">Pedicure</option>
+            <option value="Hair Coloring">Hair Coloring</option>
+            <option value="Spa">Spa</option>
+        </select>
+
+        <label for="gender">Select Gender:</label>
+        <select name="gender" id="gender" required>
+            <option value="">-- Choose Gender --</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <label for="hair_type">Select Hair Type(Optional):</label>
+        <select name="hair_type" id="hair_type">
+            <option value="">-- Choose Hair Type --</option>
+            <option value="Dry">Dry</option>
+            <option value="Oily">Oily</option>
+            <option value="Normal">Normal</option>
+            <option value="Curly">Curly</option>
+            <option value="Straight">Straight</option>
+            <option value="Frizzy">Frizzy</option>
+        </select>
+
+        <label for="skin_type">Select Skin Type(optional):</label>
+        <select name="skin_type" id="skin_type">
+            <option value="">-- Choose Skin Type --</option>
+            <option value="Dry">Dry</option>
+            <option value="Oily">Oily</option>
+            <option value="Normal">Normal</option>
+            <option value="Combination">Combination</option>
+            <option value="Sensitive">Sensitive</option>
+        </select>
+
+        <label for="budget">Enter Your Budget (in ₹):</label>
+        <input type="number" name="budget" id="budget" required placeholder="Enter amount">
+
+        <button type="submit">Get Recommendation</button>
+    </form>
+
+    {% if recommendation %}
+        <div class="recommendation">
+            <h3>Recommended Service:</h3>
+            <p>{{ recommendation }}</p>
+        </div>
+    {% endif %}
+
+</body>
+</html>
+{% endblock %}

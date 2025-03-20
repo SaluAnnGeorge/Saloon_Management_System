@@ -1,0 +1,61 @@
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header text-center bg-danger text-white">
+            <h3>Cancel Appointment</h3>
+        </div>
+        <div class="card-body text-center">
+            <p class="mb-4">
+                Are you sure you want to cancel your appointment  for the service <strong>{{ appointment.service.name }}</strong> scheduled for <strong>{{ appointment.date }} at {{ appointment.time }}</strong>? Refund will be processed within 48 hours.
+            </p>
+            <form method="POST" class="d-inline-block">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-lg">Yes, Cancel Appointment</button>
+                <a href="{% url 'appointment:my_appointments' %}" class="btn btn-secondary btn-lg">No, Go Back</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .card-body p {
+        font-size: 1.2rem;
+        color: #555;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border-radius: 5px;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+
+    .btn-secondary {
+        color: #fff;
+        background-color: #6c757d;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border-radius: 5px;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+</style>

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card text-center shadow">
+                <div class="card-body p-5">
+                    <!-- Success Icon -->
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+
+                    <!-- Success Message -->
+                    <h3 class="text-success mb-4">Booking Confirmed!</h3>
+
+                    <!-- Quick Details -->
+                    <div class="mb-4">
+                        <p class="mb-2">
+                            <strong>{{ appointment.service.name }}</strong>
+                        </p>
+                        <p class="text-muted mb-0">
+                            {{ appointment.appointment_date|date:"F d, Y" }} at {{ appointment.appointment_time|time:"g:i A" }}
+                        </p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'appointment:my_appointments' %}" class="btn btn-primary">
+                            <i class="fas fa-calendar-alt me-2"></i>View My Bookings
+                        </a>
+                        <a href="{% url 'appointment:receipt_page' appointment.id %}" class="btn btn-outline-primary">
+                            <i class="fas fa-receipt me-2"></i>Download Receipt
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

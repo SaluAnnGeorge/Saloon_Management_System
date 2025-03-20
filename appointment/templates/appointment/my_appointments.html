@@ -1,0 +1,114 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">My Appointments</h2>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    {% if appointments %}
+        <div class="row">
+            {% for appointment in appointments %}
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">{{ appointment.service.name }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Date:</strong> {{ appointment.appointment_date }}</p>
+                            <p><strong>Time:</strong> {{ appointment.appointment_time }}</p>
+                            <p><strong>Status:</strong> 
+                                <span class="badge {% if appointment.status == 'completed' %}bg-success
+                                                  {% elif appointment.status == 'approved' %}bg-primary
+                                                  {% elif appointment.status == 'rejected' %}bg-danger
+                                                  {% else %}bg-warning{% endif %}">
+                                    {{ appointment.status|title }}
+                                </span>
+                            </p>
+                            <p><strong>Payment Status:</strong> 
+                                <span class="badge {% if appointment.payment_status == 'completed' %}bg-success
+                                                  {% elif appointment.payment_status == 'failed' %}bg-danger
+                                                  {% else %}bg-warning{% endif %}">
+                                    {{ appointment.payment_status|title }}
+                                </span>
+                            </p>
+                            <p><strong>Amount:</strong> ₹{{ appointment.total_amount }}</p>
+                            
+                            {% if appointment.payment_status == 'pending' %}
+                                <p class="mb-0">
+                                    <i class="fas fa-credit-card me-2"></i>
+                                    Payment: <span class="badge bg-warning">Pending</span>
+                                </p>
+                            {% endif %}
+                            
+                            <div class="mt-3 d-flex gap-2">
+                                {% if appointment.payment_status == 'pending' %}
+                                    <a href="{% url 'appointment:payment' appointment.id %}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-credit-card"></i> Pay Now
+                                    </a>
+                                {% endif %}
+                                
+                                {% if appointment.status == 'completed' %}
+                                    {% if appointment.review %}
+                                        <a href="{% url 'appointment:edit_review' appointment.id %}" class="btn btn-warning">
+                                            <i class="fas fa-edit me-2"></i>Edit Review
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'appointment:add_review' appointment.id %}" class="btn btn-success">
+                                            <i class="fas fa-star me-2"></i>Add Review
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                                
+                                {% if appointment.payment_status == 'completed' %}
+                                    <a href="{% url 'appointment:generate_receipt' appointment.id %}" class="btn btn-info">
+                                        <i class="fas fa-file-invoice me-2"></i>View Receipt
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>You don't have any appointments yet. 
+            <a href="{% url 'appointment:book_appointment' %}" class="alert-link">Book an appointment now!</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.badge {
+    padding: 0.5em 1em;
+    font-size: 0.9em;
+}
+
+.btn {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.btn i {
+    margin-right: 0.5rem;
+}
+</style>
+{% endblock %}
