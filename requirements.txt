@@ -20,3 +20,5 @@ shortuuid
 openpyxl
 matplotlib
 django-mathfilters
+seaborn
+
