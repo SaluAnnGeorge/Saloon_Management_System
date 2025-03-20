@@ -14,3 +14,4 @@ django-cors-headers
 django-jazzmin
 xhtml2pdf
 google-generativeai
+django-ckeditor
